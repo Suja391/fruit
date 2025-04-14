@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FreshFruit Market & Seller Portal</title>
+    <style>
+        /* --- Combined and Merged Styles --- */
+
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8; /* Default background for non-login views */
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh; /* Ensure body covers full viewport height */
+            transition: background-color 0.3s ease; /* Optional: Smooth transition */
+        }
+
+        /* Styles for BODY when LOGIN VIEW is active */
+        body.login-view {
+            background-image: url('https://i.pinimg.com/736x/f4/a9/12/f4a91247272251ef254ab5d5ce076d90.jpg');
+            background-size: cover;         /* Cover the entire viewport */
+            background-position: center;    /* Center the image */
+            background-repeat: no-repeat;   /* Do not repeat the image */
+            background-attachment: fixed;   /* Keep background fixed on scroll */
+            background-color: #464646; /* Fallback color if image fails */
+        }
+
+
+        /* Login Section (Adjusted for body background) */
+        #login-section {
+            padding: 30px 40px; /* Adjusted padding slightly */
+            text-align: center;
+            /* Semi-transparent white background for readability */
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
+            margin: 5vh auto; /* Center vertically using viewport height */
+            width: 400px;
+            max-width: 90%; /* Ensure it fits smaller screens */
+            box-sizing: border-box;
+            /* REMOVED background-image properties from here */
+            /* REMOVED color: white; - text color will inherit or be set by child elements */
+        }
+
+        #login-section h2 {
+            color: #ff6f61; /* Coral */
+            margin-top: 0; /* Removed top margin */
+            margin-bottom: 30px;
+            font-size: 2em;
+             /* Text shadow removed as background is now lighter */
+             /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */
+        }
+
+        #login-form input[type="text"],
+        #login-form input[type="password"] {
+            width: 100%; /* Use full width */
+            padding: 12px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+             /* Input background is already light, should be fine */
+             /* background-color: rgba(255, 255, 255, 0.8); */
+        }
+
+        #login-form button {
+            background-color: #ff6f61; /* Coral */
+            color: white;
+            padding: 14px 20px;
+            margin: 15px 0 8px 0; /* Added top margin */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #login-form button:hover {
+            background-color: #e06053; /* Darker Coral */
+        }
+
+        #login-error {
+            color: #d32f2f; /* Changed to a darker red for better contrast */
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 1.2em;
+             /* text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); */ /* Removed shadow */
+        }
+
+        /* --- Header Styles --- */
+        #public-market-header {
+            background-color: #6b5b95; color: white; padding: 30px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: none;
+        }
+         #public-market-header h1 { font-size: 2.5em; margin-bottom: 5px; }
+         #public-market-header p { font-size: 1.1em; color: #d1d0d0; }
+          #public-market-header a { color: #ffeb3b; text-decoration: none; margin-left: 20px; }
+          #public-market-header a:hover { text-decoration: underline; }
+
+        #seller-portal-header {
+            background-color: #6b5b95; color: white; padding: 30px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: none;
+        }
+        #seller-portal-header h1 { font-size: 2.5em; margin-bottom: 5px; }
+        #seller-portal-header p { font-size: 1.1em; color: #d1d0d0; }
+         #seller-portal-header a { color: #ffeb3b; text-decoration: none; margin-left: 20px; }
+         #seller-portal-header a:hover { text-decoration: underline; }
+
+        /* --- Public Market Fruit List Styles --- */
+        .public-market-container { max-width: 960px; margin: 30px auto; padding: 20px; display: none; }
+        .fruit-item { background-color: #fff; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; border: 1px solid #e0e0e0; }
+        .fruit-item:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .fruit-header { display: flex; align-items: center; margin-bottom: 20px; }
+        .fruit-header img { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-right: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+        .fruit-header h2 { color: #55a460; font-size: 1.8em; margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #f0f0f0; }
+        th { background-color: #a3916f; color: white; font-weight: bold; }
+
+        /* --- Seller Dashboard Styles --- */
+        #seller-dashboard { display: none; max-width: 960px; margin: 30px auto; padding: 20px; background-color: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e0e0e0; }
+        #seller-dashboard h2 { color: #ff6f61; margin-bottom: 20px; font-size: 2em; }
+        #seller-dashboard section { margin-bottom: 30px; }
+         #seller-dashboard h3 { color: #55a460; margin-bottom: 10px; }
+        #seller-dashboard label { display: block; margin-bottom: 5px; font-weight: bold; }
+        #check-fruit-input, #fruit-select { width: calc(100% - 24px); padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; box-sizing: border-box; }
+        #check-fruit-button { background-color: #a3916f; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease; margin-left: 5px; }
+        #check-fruit-button:hover { background-color: #8c7d5f; }
+        #fruit-existence-result { margin-top: 10px; font-weight: bold; min-height: 1.2em; }
+        #add-order-item-button { background-color: #ff6f61; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease; margin-top: 5px; margin-bottom: 15px; }
+        #add-order-item-button:hover { background-color: #e06053; }
+        #order-items-list { list-style: none; padding: 0; margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; min-height: 50px; }
+        #order-items-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #f0f0f0; }
+        #order-items-list li:last-child { border-bottom: none; }
+        #order-items-list li button.remove-item { background-color: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9em; transition: background-color 0.3s ease; }
+        #order-items-list li button.remove-item:hover { background-color: #b22222; }
+        #calculate-total-button { background-color: #6b5b95; color: white; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease; }
+        #calculate-total-button:hover { background-color: #554a7c; }
+        #total-price { margin-top: 15px; font-size: 1.2em; font-weight: bold; color: #55a460; min-height: 1.3em; }
+        #logout-button { background-color: #a3916f; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease; margin-top: 20px; display: block; }
+        #logout-button:hover { background-color: #8c7d5f; }
+
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            #login-section { width: 90%; padding: 30px 20px; margin: 5vh auto; /* Adjusted margin */ }
+            .public-market-container, #seller-dashboard { padding: 15px; }
+            .fruit-header { flex-direction: column; align-items: flex-start; }
+            .fruit-header img { margin-bottom: 15px; margin-right: 0; width: 80px; height: 80px; }
+            .fruit-header h2 { font-size: 1.6em; }
+            table, th, td { font-size: 0.9em; }
+            th, td { padding: 10px 8px; }
+            #check-fruit-input { width: calc(100% - 95px); margin-right: 5px; display: inline-block; vertical-align: middle; }
+             #check-fruit-button { display: inline-block; vertical-align: middle; padding: 12px 15px; }
+            #order-items-list li { flex-direction: column; align-items: flex-start; padding: 12px 15px; }
+             #order-items-list li span { margin-bottom: 8px; display: block; /* Ensure span takes full width */ }
+             #order-items-list li button.remove-item { padding: 6px 10px; font-size: 0.85em; align-self: flex-end; /* Align button to right */}
+        }
+        @media (max-width: 480px) {
+             #login-section { width: 95%; padding: 20px 15px; }
+             #login-section h2 { font-size: 1.8em; }
+             #seller-portal-header h1, #public-market-header h1 { font-size: 2em; }
+             #seller-dashboard h2 { font-size: 1.8em; }
+              #check-fruit-input { width: 100%; display: block; margin-bottom: 10px; margin-right: 0; }
+              #check-fruit-button { width: 100%; display: block; margin-left: 0; padding: 12px 12px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="login-section">
+        <h2>Seller Login</h2>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Username" required />
+            <input type="password" id="password" placeholder="Password" required />
+            <button type="submit">Login</button>
+        </form>
+        <p id="login-error"></p>
+    </div>
+
+    <header id="seller-portal-header">
+        <h1>FreshFruit Market</h1>
+        <p>Seller Portal
+           <a href="#" id="view-public-market-link">View Public Market</a>
+        </p>
+
+    </header>
+
+     <header id="public-market-header">
+         <h1>FreshFruit Market</h1>
+         <p>Your daily source of fresh fruits!
+            <a href="#" id="view-seller-portal-link">Seller Portal</a>
+         </p>
+     </header>
+
+    <div id="seller-dashboard">
+        <h2>Seller Dashboard</h2>
+
+        <section id="check-fruit-section">
+            <h3>Check Fruit Existence</h3>
+            <label for="check-fruit-input">Enter fruit name:</label>
+            <input type="text" id="check-fruit-input" placeholder="e.g., Mango">
+            <button id="check-fruit-button">Check</button>
+            <div id="fruit-existence-result"></div>
+        </section>
+
+        <section id="create-order-section">
+            <h3>Create Order</h3>
+            <label for="fruit-select">Select Fruit:</label>
+            <select id="fruit-select">
+                <option value="">-- Select a fruit --</option>
+                </select>
+            <button id="add-order-item-button">Add Item</button>
+
+            <h4>Current Order Items:</h4>
+            <ul id="order-items-list">
+                </ul>
+
+            <button id="calculate-total-button">Calculate Total</button>
+            <div id="total-price"></div>
+        </section>
+
+        <button id="logout-button">Logout</button>
+    </div>
+
+    <div class="public-market-container">
+        <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/f4/2a/61/f42a611a6232dd96cf744d162380fd2a.jpg" alt="Dragon Fruit" />
+                 <h2>Dragon Fruit</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£3.00</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£3.20</td></tr>
+                     <tr><td>Amin's Basket</td><td>£2.90</td></tr>
+                 </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/84/a0/b9/84a0b9aac68e99c16320b1bf3c948023.jpg" alt="Passion Fruit" /> <h2>Passion Fruit</h2> </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£1.20</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£1.15</td></tr>
+                     <tr><td>Amin's Basket</td><td>£1.30</td></tr>
+                 </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/43/07/76/43077667f5c711813435230f27ee8b3d.jpg" alt="Mango" />
+                 <h2>Mango</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£2.50</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£2.70</td></tr>
+                     <tr><td>Amin's Basket</td><td>£2.40</td></tr>
+                 </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+            <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/32/62/a5/3262a55599b7e5f5c31f02fb83705081.jpg" alt="Kiwi" />
+                 <h2>Kiwi</h2>
+            </div>
+            <table>
+                <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                <tbody>
+                    <tr><td>Suja Farms</td><td>£4.00</td></tr>
+                    <tr><td>Katana's Fresh Fruits</td><td>£4.20</td></tr>
+                    <tr><td>Amin's Basket</td><td>£3.80</td></tr>
+                </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/90/74/9f/90749f95c8476bae09ba7590c5ed4830.jpg" alt="Strawberries" />
+                 <h2>Strawberries</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£5.00</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£5.30</td></tr>
+                     <tr><td>Amin's Basket</td><td>£4.90</td></tr>
+                 </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/8f/b6/f8/8fb6f8bb627c0000401dfe209cb1ee7e.jpg" alt="Pineapples" />
+                 <h2>Pineapples</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£3.50</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£3.60</td></tr>
+                     <tr><td>Amin's Basket</td><td>£3.40</td></tr>
+                 </tbody>
+             </table>
+         </div>
+          <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/68/2e/69/682e69e1f224e033facf75894219c7e7.jpg" alt="Pears" />
+                 <h2>Pears</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£2.80</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£2.90</td></tr>
+                     <tr><td>Amin's Basket</td><td>£2.70</td></tr>
+                 </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/d7/48/82/d7488207ad0b0f4c31b2eac6c38e56de.jpg" alt="Watermelons" />
+                 <h2>Watermelons</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£0.90</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£1.00</td></tr>
+                     <tr><td>Amin's Basket</td><td>£0.85</td></tr>
+                 </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+            <div class="fruit-header">
+                 <img src="https://i.pinimg.com/474x/3d/aa/69/3daa6970f7f3eba2b8a4e27687fc4761.jpg" alt="Blueberries" />
+                 <h2>Blueberries</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£6.00</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£6.20</td></tr>
+                     <tr><td>Amin's Basket</td><td>£5.90</td></tr>
+                 </tbody>
+             </table>
+         </div>
+         <div class="fruit-item">
+             <div class="fruit-header">
+                 <img src="https://i.pinimg.com/736x/44/41/c1/4441c1bf22610c5d995d954b08fffe43.jpg" alt="Orange" />
+                 <h2>Orange</h2>
+             </div>
+             <table>
+                 <thead><tr><th>Seller</th><th>Price (per kg)</th></tr></thead>
+                 <tbody>
+                     <tr><td>Suja Farms</td><td>£2.70</td></tr>
+                     <tr><td>Katana's Fresh Fruits</td><td>£2.60</td></tr>
+                     <tr><td>Amin's Basket</td><td>£2.50</td></tr>
+                 </tbody>
+             </table>
+         </div>
+        </div>
+
+    <script>
+        // --- Combined and Merged JavaScript ---
+
+        // --- Data (From Page 2) ---
+        const fruitsData = [
+            { name: 'Dragon Fruit', price: 3.00 }, // Using lowest price from Page 1 for consistency
+            { name: 'Passion Fruit', price: 1.15 },// Using lowest price from Page 1
+            { name: 'Mango', price: 2.40 },      // Using lowest price from Page 1
+            { name: 'Kiwi', price: 3.80 },       // Using lowest price from Page 1
+            { name: 'Strawberries', price: 4.90 },// Using lowest price from Page 1
+            { name: 'Pineapples', price: 3.40 }, // Using lowest price from Page 1
+            { name: 'Pears', price: 2.70 },       // Using lowest price from Page 1
+            { name: 'Watermelons', price: 0.85 }, // Using lowest price from Page 1
+            { name: 'Blueberries', price: 5.90 }, // Using lowest price from Page 1
+            { name: 'Orange', price: 2.50 }       // Using lowest price from Page 1
+        ];
+
+        let currentOrder = [];
+        let currentView = 'login'; // 'login', 'dashboard', 'market'
+
+        // --- DOM Elements (Combined and Renamed where necessary) ---
+        const loginSectionDiv = document.getElementById('login-section'); // Renamed variable
+        const loginFormEl = document.getElementById('login-form'); // Renamed variable
+        const usernameInput = document.getElementById('username'); // Renamed variable
+        const passwordInput = document.getElementById('password'); // Renamed variable
+        const loginErrorP = document.getElementById('login-error'); // Renamed variable
+
+        const sellerPortalHeader = document.getElementById('seller-portal-header');
+        const publicMarketHeader = document.getElementById('public-market-header');
+
+        const sellerDashboardDiv = document.getElementById('seller-dashboard'); // Renamed variable
+        const publicMarketContainer = document.querySelector('.public-market-container'); // Reference to Page 1 content
+
+        // Seller Dashboard Elements
+        const checkFruitInput = document.getElementById('check-fruit-input');
+        const checkFruitButton = document.getElementById('check-fruit-button');
+        const fruitExistenceResult = document.getElementById('fruit-existence-result');
+        const fruitSelect = document.getElementById('fruit-select');
+        const addOrderItemButton = document.getElementById('add-order-item-button');
+        const orderItemsList = document.getElementById('order-items-list');
+        const calculateTotalButton = document.getElementById('calculate-total-button');
+        const totalPriceDiv = document.getElementById('total-price');
+        const logoutButton = document.getElementById('logout-button');
+
+        // View Toggle Links
+        const viewPublicMarketLink = document.getElementById('view-public-market-link');
+        const viewSellerPortalLink = document.getElementById('view-seller-portal-link');
+
+
+        // --- Functions ---
+
+        // Function to control which view is visible and body class
+        function showView(viewToShow) { // viewToShow can be 'login', 'dashboard', 'market'
+             currentView = viewToShow;
+
+             // Hide all main sections first
+             loginSectionDiv.style.display = 'none';
+             sellerPortalHeader.style.display = 'none';
+             publicMarketHeader.style.display = 'none';
+             sellerDashboardDiv.style.display = 'none';
+             publicMarketContainer.style.display = 'none';
+
+             // Manage body class for background
+             if (viewToShow === 'login') {
+                 document.body.classList.add('login-view');
+                 loginSectionDiv.style.display = 'block';
+             } else {
+                  document.body.classList.remove('login-view'); // Remove class for non-login views
+                  if (viewToShow === 'dashboard') {
+                      sellerPortalHeader.style.display = 'block'; // Show seller header
+                      sellerDashboardDiv.style.display = 'block';
+                  } else if (viewToShow === 'market') {
+                       publicMarketHeader.style.display = 'block'; // Show public header
+                       publicMarketContainer.style.display = 'block';
+                  }
+             }
+        }
+
+
+        // --- Seller Dashboard Functions (From Page 2) ---
+        function populateFruitSelect() {
+            // Clear existing options first (except the default)
+            fruitSelect.innerHTML = '<option value="">-- Select a fruit --</option>';
+            fruitsData.forEach(fruit => {
+                const option = document.createElement('option');
+                option.value = fruit.name;
+                // Display price in the dropdown for info
+                option.textContent = `${fruit.name} (£${fruit.price.toFixed(2)}/kg)`;
+                option.dataset.price = fruit.price; // Store price in data attribute
+                fruitSelect.appendChild(option);
+            });
+        }
+
+        function displayOrderItem(item, index) { // Added index parameter
+            const listItem = document.createElement('li');
+            const itemTotal = (item.price * item.quantity).toFixed(2);
+            // Added specific classes for parts of the list item text if needed for styling
+            listItem.innerHTML = `
+                <span class="order-item-details">${item.name} - Qty: ${item.quantity} @ £${item.price.toFixed(2)} = £${itemTotal}</span>
+                <button class="remove-item" data-index="${index}">Remove</button> `;
+            // Add event listener directly to the button here for simplicity
+             listItem.querySelector('.remove-item').addEventListener('click', function() {
+                removeOrderItem(index);
+            });
+
+            orderItemsList.appendChild(listItem);
+        }
+
+        function clearOrder() {
+            currentOrder = [];
+            renderOrder(); // Re-render the empty list
+            // calculateTotal(); // renderOrder calls calculateTotal already
+        }
+
+         function calculateTotal() {
+            let total = 0;
+            currentOrder.forEach(item => {
+                total += item.price * item.quantity;
+            });
+            totalPriceDiv.textContent = total > 0 ? `Total: £${total.toFixed(2)}` : ''; // Show total or clear if zero
+        }
+
+         function removeOrderItem(indexToRemove) {
+             if (indexToRemove >= 0 && indexToRemove < currentOrder.length) {
+                currentOrder.splice(indexToRemove, 1);
+                renderOrder(); // Re-render the list with updated indices
+             }
+        }
+
+        function renderOrder() {
+            orderItemsList.innerHTML = ''; // Clear the current list display
+             if (currentOrder.length === 0) {
+                 // Optional: Display a message if the order is empty
+                 // orderItemsList.innerHTML = '<li>No items added yet.</li>';
+             } else {
+                 currentOrder.forEach((item, index) => {
+                     // Pass the current index when displaying
+                     displayOrderItem(item, index);
+                 });
+             }
+             calculateTotal(); // Recalculate total whenever order is rendered
+        }
+
+        // --- Event Listeners ---
+
+        // Login Form Submission
+        loginFormEl.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            // Dummy login check (Replace with real authentication)
+            if (username === "seller" && password === "1234") {
+                loginErrorP.textContent = "";
+                // Go to Seller Dashboard view after successful seller login
+                showView('dashboard');
+                // Populate the fruit dropdown only when entering the dashboard
+                populateFruitSelect();
+                clearOrder(); // Clear any previous order state
+                fruitExistenceResult.textContent = ''; // Clear check fruit result
+                checkFruitInput.value = ''; // Clear check fruit input
+
+            } else {
+                // Optional: Add logic here for other user types or show invalid login
+                loginErrorP.textContent = "Invalid username or password!";
+                passwordInput.value = ''; // Clear password field on error
+            }
+        });
+
+        // Check Fruit Existence Button
+        checkFruitButton.addEventListener('click', function () {
+            const fruitToCheck = checkFruitInput.value.trim();
+             if (!fruitToCheck) {
+                  fruitExistenceResult.textContent = 'Please enter a fruit name.';
+                  fruitExistenceResult.style.color = '#d32f2f'; // Error color
+                 return;
+             }
+            // Case-insensitive check
+            const exists = fruitsData.some(fruit => fruit.name.toLowerCase() === fruitToCheck.toLowerCase());
+             const fruitInfo = fruitsData.find(fruit => fruit.name.toLowerCase() === fruitToCheck.toLowerCase());
+
+             if (exists && fruitInfo) {
+                 fruitExistenceResult.textContent = `${fruitInfo.name} exists. Price: £${fruitInfo.price.toFixed(2)}/kg.`;
+                 fruitExistenceResult.style.color = '#333'; // Reset color
+             } else {
+                 fruitExistenceResult.textContent = `"${fruitToCheck}" does not exist in our list.`;
+                 fruitExistenceResult.style.color = '#d32f2f'; // Error color
+             }
+        });
+
+        // Add Order Item Button
+        addOrderItemButton.addEventListener('click', function () {
+            const selectedOption = fruitSelect.options[fruitSelect.selectedIndex];
+            const selectedFruitName = selectedOption.value;
+
+            if (!selectedFruitName) {
+                alert("Please select a fruit.");
+                return;
+            }
+
+             // Check if fruit already exists in the order
+             const existingItemIndex = currentOrder.findIndex(item => item.name === selectedFruitName);
+
+             let quantityInput = prompt(`Enter quantity (kg) for ${selectedFruitName}:`, '1'); // Default quantity to 1
+
+             if (quantityInput === null) return; // User cancelled prompt
+
+             const quantity = parseFloat(quantityInput); // Use parseFloat for potential decimals
+
+             if (quantity && !isNaN(quantity) && quantity > 0) {
+                 const selectedFruitPrice = parseFloat(selectedOption.dataset.price); // Get price from data attribute
+
+                 if (existingItemIndex > -1) {
+                     // Update quantity if item already exists
+                     currentOrder[existingItemIndex].quantity += quantity;
+                 } else {
+                     // Add new item if it doesn't exist
+                     currentOrder.push({
+                         name: selectedFruitName,
+                         price: selectedFruitPrice,
+                         quantity: quantity
+                     });
+                 }
+                 renderOrder(); // Re-render the list
+             } else {
+                 alert("Invalid quantity. Please enter a positive number.");
+             }
+        });
+
+        // Calculate Total Button (Now less necessary as total updates automatically)
+        calculateTotalButton.addEventListener('click', function () {
+            // Total is now calculated on add/remove, but we can keep this for explicit recalc
+             calculateTotal();
+             if (currentOrder.length === 0) {
+                 alert("Order is empty. Add items first.");
+             }
+        });
+
+        // Logout Button
+        logoutButton.addEventListener('click', function () {
+            clearOrder(); // Clear the order
+            usernameInput.value = ''; // Clear username field
+            passwordInput.value = ''; // Clear password field
+            loginErrorP.textContent = ''; // Clear any login error
+            showView('login'); // Go back to login view
+        });
+
+         // View Toggle Links (Example implementation)
+         viewPublicMarketLink.addEventListener('click', function(e) {
+             e.preventDefault();
+             showView('market');
+         });
+
+         viewSellerPortalLink.addEventListener('click', function(e) {
+             e.preventDefault();
+             // In a real app, you might check if the user is actually logged in as seller still
+              if (currentView === 'dashboard') { // Only allow toggle if already logged in
+                  showView('dashboard'); // Or maybe show portal directly if already logged in
+              } else if (usernameInput.value === "seller" && passwordInput.value === "1234"){ // Check credentials again if not on dashboard
+                  showView('dashboard');
+              }
+              else {
+                   alert("Please log in as seller to view the portal.");
+                   showView('login');
+              }
+         });
+
+        // Initialize View
+        showView('login'); // Start at the login screen
+
+    </script>
+
+</body>
+
+</html>
